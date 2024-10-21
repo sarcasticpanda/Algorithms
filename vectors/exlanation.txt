@@ -1,0 +1,131 @@
+1. Knapsack Problem Explanation
+Goal: Given a set of items, each with a weight and a value, find the most valuable subset of items that can fit into a knapsack with a fixed capacity. You can't take partial items—it's either take it or leave it (0/1).
+
+Steps for the 0/1 Knapsack Problem:
+Items and Capacity: You have n items, each with a weight and value. You also have a knapsack with a maximum weight capacity.
+Objective: Maximize the total value of items you can carry without exceeding the weight limit.
+Dynamic Programming Table: Create a 2D table dp[][] where:
+dp[i][w] holds the maximum value you can get using the first i items and a knapsack capacity of w.
+Filling the Table: For each item i and weight w, you have two options:
+Exclude the item: Carry forward the value from the previous item (dp[i-1][w]).
+Include the item (if its weight is less than or equal to w): Add the item's value to the maximum value you can get with the remaining capacity (dp[i-1][w - weight[i-1]] + value[i-1]).
+Final Answer: The maximum value that fits into the knapsack is in the bottom-right corner of the table, dp[n][capacity].
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Function to solve the 0/1 Knapsack problem
+int knapsack(int capacity, vector<int> weights, vector<int> values, int n) {
+    // Create a DP table to store the maximum value for each subproblem
+    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));
+
+    // Build the DP table
+    for (int i = 1; i <= n; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            if (weights[i - 1] <= w) {
+                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - weights[i - 1]] + values[i - 1]);
+            } else {
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+
+    // The bottom-right corner of the table contains the answer
+    return dp[n][capacity];
+}
+
+int main() {
+    int n; // Number of items
+    cout << "Enter the number of items: ";
+    cin >> n;
+
+    vector<int> weights(n), values(n);
+    int capacity;
+
+    cout << "Enter the capacity of the knapsack: ";
+    cin >> capacity;
+
+    cout << "Enter the weights of the items:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> weights[i];
+    }
+
+    cout << "Enter the values of the items:\n";
+    for (int i = 0; i < n; i++) {
+        cin >> values[i];
+    }
+
+    // Call the knapsack function and display the result
+    int maxProfit = knapsack(capacity, weights, values, n);
+    cout << "Maximum value that can be carried in the knapsack: " << maxProfit << endl;
+
+    return 0;
+}
+2. Hashing Explanation
+Goal: Hashing is used to map data (like strings) to a fixed-size number (the hash). This helps in quickly finding, inserting, or deleting items in a hash table.
+
+Steps for Hashing:
+Hash Table: This is a table (or array) where you store the data.
+Hash Function: This function converts the input (like a string) into a number (index) that tells you where to place the item in the table.
+Example: Add the ASCII values of all characters in the string and take the modulus with the table size to get the index.
+Collisions: Sometimes, two different items can be assigned to the same index in the table. This is called a collision. In this example, we simply detect collisions without handling them.
+#include <iostream>
+#include <string>
+using namespace std;
+
+class HashTable {
+private:
+    static const int tableSize = 10; // Size of the hash table
+    string table[tableSize];         // Hash table array
+
+public:
+    // Simple hash function that uses the division method
+    int hashFunction(string key) {
+        int hash = 0;
+        for (int i = 0; i < key.length(); i++) {
+            hash += key[i]; // Summing ASCII values of each character
+        }
+        return hash % tableSize; // Modulus with table size
+    }
+
+    // Insert a key into the hash table
+    void insert(string key) {
+        int index = hashFunction(key);
+        if (table[index] == "") {
+            table[index] = key;
+            cout << "Inserted '" << key << "' at index " << index << endl;
+        } else {
+            cout << "Collision occurred at index " << index << " for key '" << key << "'!" << endl;
+        }
+    }
+
+    // Display the hash table
+    void displayTable() {
+        for (int i = 0; i < tableSize; i++) {
+            if (table[i] != "") {
+                cout << "Index " << i << ": " << table[i] << endl;
+            } else {
+                cout << "Index " << i << ": Empty" << endl;
+            }
+        }
+    }
+};
+
+int main() {
+    HashTable hashTable;
+
+    hashTable.insert("apple");
+    hashTable.insert("banana");
+    hashTable.insert("cherry");
+    hashTable.insert("date");
+    hashTable.insert("elderberry");
+
+    cout << "\nHash Table:" << endl;
+    hashTable.displayTable();
+
+    return 0;
+}
+Points to Remember:
+Hash Table: Stores data like an array, with indexes calculated by the hash function.
+Hash Function: Converts input data (e.g., strings) into a specific index (using mathematical operations like summing ASCII values and modulus).
+Collision: When two inputs generate the same index, this is called a collision. In this code, it just detects collisions but doesn’t resolve them.
