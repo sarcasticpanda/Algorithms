@@ -18,5 +18,6 @@ void towerOfHanoi(int n, char source, char destination, char auxiliary) {
 int main() {
     int n = 3;
     towerOfHanoi(n, 'A', 'C', 'B');
+    towerOfHanoi(n, 'A', 'C', 'B');
     return 0;
 }
